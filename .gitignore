@@ -1,0 +1,14 @@
+# PhpStorm
+.idea
+
+# General files
+*~
+*.DS_STORE
+
+# Dependency managers
+node_modules/
+npm-debug.log
+
+# App
+config.json
+.pxn-channels
