@@ -4,7 +4,7 @@
   "description": "Plex XMLTV Netherlands",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon --watch src --exec 'npm run lint && node ./src/index.js run'",
+    "start": "nodemon --watch src --exec 'npm run lint && node ./src/index.js --'",
     "lint": "eslint -c ./package.json ./"
   },
   "engines": {
