@@ -8,6 +8,9 @@ const fetch = require('node-fetch');
  * Import own modules
  */
 const config = require('../config');
+const stringUtils = require('../utils/strings');
+const dateUtils = require('../utils/date');
+const dataUtils = require('../utils/data');
 
 /**
  * Check if we are using the dev version
@@ -15,13 +18,32 @@ const config = require('../config');
 const dev = process.env.NODE_ENV !== 'production';
 
 /**
- * Fetch the EPG data from a provider
+ * Fetch the EPG index from a provider
  *
+ * @param date
+ * @param channel
  * @return {Promise<unknown>}
  */
-const fetchRawEpg = () => {
-    return new Promise((resolve, reject) => {
-        reject(new Error('Getting EPG Data!'));
+const fetchEpgIndex = (date, channel) => {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve) => {
+        // Define new data pool for all index lists
+        let data = [];
+
+        // Loop over a predefined page list
+        for(let page = 1; page < 5; page++) {
+            // Get an index page
+            const index = await dataUtils.epgIndex(date, page);
+            // Get the channel from the index page
+            const channelIndex = index.entries.filter((index) => {
+                return index.o === channel.epgId;
+            });
+            // Store the index items into the pool
+            data = data.concat(channelIndex[0].l);
+        }
+
+        // Return the complete index list
+        resolve(data);
     });
 };
 
@@ -32,7 +54,7 @@ const fetchRawEpg = () => {
  */
 const fetchChannels = () => {
     return new Promise((resolve, reject) => {
-        fetch(`${config.epg.host}/${config.epg.country}/channels?sort=channelNumber`, {
+        fetch(`${config.epg.host}/${config.epg.country}/web/channels?sort=channelNumber`, {
             method: 'get',
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:75.0) Gecko/20100101 Firefox/75.0'
@@ -54,12 +76,19 @@ module.exports = {
      * @return {Promise<void>}
      */
     grab: async () => {
-        const epgData = await fetchRawEpg().catch((e) => {
-            console.log(e);
-            process.exit(1);
-        });
+        // Loop over all user marked channel numbers
+        for(let item = 0; item < config.channels.length; item++) {
+            // Get the channel number
+            const channelNumber = config.channels[item];
+            // Get the channel data from the pre-grabbed file
+            const channel = stringUtils.getChannelByNumber(channelNumber);
+            // Output the currently running channel
+            stringUtils.outputChannel(channel);
+            // Fetch the EPG index list
+            const epgData = await fetchEpgIndex(dateUtils.getYYYYMMDD(), channel);
 
-        console.log('epgData', epgData);
+            console.log('epgData', epgData);
+        }
     },
 
     /**

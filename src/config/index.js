@@ -19,7 +19,8 @@ const dev = process.env.NODE_ENV !== 'production';
 const baseConfig = {
     epg: {
         host: "https://web-api-prod-obo.horizon.tv/oesp/v3",
-        country: "NL/nld/web"
+        country: "NL/nld",
+        days: 7
     },
     channels: []
 };
