@@ -94,5 +94,23 @@ module.exports = {
         fs.writeFileSync(`${dev ? __dirname + '/../config' : process.cwd()}/.pxn-channels`, JSON.stringify(channels));
 
         console.log(`Saved ${channels.length} channel(s)!`);
+    },
+
+    /**
+     * Lists available channels and marks the channels configured for epg grabbing
+     */
+    list: () => {
+        if(fs.existsSync(`${dev ? __dirname + '/../config' : process.cwd()}/.pxn-channels`)) {
+            const channels = JSON.parse(fs.readFileSync(`${dev ? __dirname + '/../config' : process.cwd()}/.pxn-channels`, 'utf-8'));
+
+            console.log(`Found ${channels.length} channel(s). ${config.channels.length} channel(s) marked for grabbing:`);
+            console.log('');
+            for(let item = 0; item < channels.length; item++) {
+                const channel = channels[item];
+                console.log(`${channel.number}. ${channel.name}${config.channels.includes(channel.number) ? ' <-- Configured for grabbing' : ''}`);
+            }
+        } else {
+            console.log('Error missing channel list! Please grab channel list first.');
+        }
     }
 };
