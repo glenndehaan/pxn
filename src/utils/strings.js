@@ -25,12 +25,22 @@ module.exports = {
 
     /**
      * Log channel info
+     *
+     * @param channel
      */
     outputChannel: (channel) => {
         console.log('---------------------------------------------------------------');
         console.log(`${channel.number}. ${channel.name}`);
         console.log('---------------------------------------------------------------');
         console.log('');
+    },
+
+    /**
+     * Log save info
+     */
+    outputSave: () => {
+        console.log('');
+        console.log('Saving data to XMLTV file...');
     },
 
     /**

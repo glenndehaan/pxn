@@ -11,6 +11,7 @@ const config = require('../config');
 const stringUtils = require('../utils/strings');
 const dateUtils = require('../utils/date');
 const dataUtils = require('../utils/data');
+const xml = require('../modules/xml');
 
 /**
  * Check if we are using the dev version
@@ -76,19 +77,46 @@ module.exports = {
      * @return {Promise<void>}
      */
     grab: async () => {
+        const epgStorage = {};
+
         // Loop over all user marked channel numbers
         for(let item = 0; item < config.channels.length; item++) {
+            // Create channel epg storage
+            let data = [];
+
             // Get the channel number
             const channelNumber = config.channels[item];
             // Get the channel data from the pre-grabbed file
             const channel = stringUtils.getChannelByNumber(channelNumber);
             // Output the currently running channel
             stringUtils.outputChannel(channel);
-            // Fetch the EPG index list
-            const epgData = await fetchEpgIndex(dateUtils.getYYYYMMDD(), channel);
 
-            console.log('epgData', epgData);
+            // Get the dates to loop over
+            const days = dateUtils.getNextDays(config.epg.days);
+
+            // Loop over all dates to get from the epg index
+            for(let i = 0; i < days.length; i++) {
+                // Get date
+                const date = days[i];
+
+                // Fetch the EPG index list
+                const epgData = await fetchEpgIndex(date, channel);
+
+                // Store data in channel epg storage
+                data = data.concat(epgData);
+            }
+
+            // Store data in epg storage
+            epgStorage[channel.number] = data;
+
+            console.log(`Found ${data.length} show(s)!`);
         }
+
+        /**
+         * Save data to XMLTV format
+         */
+        stringUtils.outputSave();
+        await xml.saveEpgData(epgStorage);
     },
 
     /**
