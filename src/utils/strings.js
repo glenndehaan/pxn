@@ -72,6 +72,6 @@ module.exports = {
             return obj.assetType === "tva-boxcover";
         });
 
-        return value[0] ? value[0] : false;
+        return value[0].url ? value[0].url : false;
     }
 };
