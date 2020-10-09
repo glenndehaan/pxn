@@ -59,5 +59,19 @@ module.exports = {
             console.log('Error missing channel list! Please grab channel list first.');
             process.exit(0);
         }
+    },
+
+    /**
+     * Gets the box icon from additional show data
+     *
+     * @param data
+     * @return {*}
+     */
+    getIconFromAdditionalData: (data) => {
+        const value = data.filter((obj) => {
+            return obj.assetType === "tva-boxcover";
+        });
+
+        return value[0] ? value[0] : false;
     }
 };

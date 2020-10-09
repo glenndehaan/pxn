@@ -106,6 +106,12 @@ module.exports = {
                             category.att('lang', 'nl');
                         }
                     }
+
+                    // Set icon if available
+                    const icon = stringUtils.getIconFromAdditionalData(data.additionalShowData.images);
+                    if(icon) {
+                        xmlProgramme.ele('icon').att('src', icon);
+                    }
                 }
             }
 
