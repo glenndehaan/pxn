@@ -106,6 +106,11 @@ module.exports = {
                 data = data.concat(epgData);
             }
 
+            // Loop over all channel epg storage and add additional show data
+            for(let i = 0; i < data.length; i++) {
+                data[i].additionalShowData = await dataUtils.epgShow(data[i].i, i, data.length);
+            }
+
             // Store data in epg storage
             epgStorage[channel.number] = data;
 

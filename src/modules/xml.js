@@ -81,6 +81,31 @@ module.exports = {
                     // Set programme elements
                     const title = xmlProgramme.ele('title').txt(data.t);
                     title.att('lang', 'nl');
+
+                    // Set sub-title if available
+                    if(data.additionalShowData.secondaryTitle !== '') {
+                        const subTitle = xmlProgramme.ele('sub-title').txt(data.additionalShowData.secondaryTitle);
+                        subTitle.att('lang', 'nl');
+                    }
+
+                    // Set description if available
+                    if(data.additionalShowData.longDescription !== '') {
+                        const description = xmlProgramme.ele('desc').txt(data.additionalShowData.longDescription);
+                        description.att('lang', 'nl');
+                    }
+
+                    // Set date if available
+                    if(data.additionalShowData.year !== '') {
+                        xmlProgramme.ele('date').txt(data.additionalShowData.year);
+                    }
+
+                    // Set categories if available
+                    for(let c = 0; c < data.additionalShowData.categories.length; c++) {
+                        if(data.additionalShowData.categories[c].title) {
+                            const category = xmlProgramme.ele('category').txt(data.additionalShowData.categories[c].title);
+                            category.att('lang', 'nl');
+                        }
+                    }
                 }
             }
 
