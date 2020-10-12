@@ -2,9 +2,12 @@
   "name": "pxn",
   "version": "0.0.0",
   "description": "Plex XMLTV Netherlands",
-  "main": "src/index.js",
+  "bin": "src/bundle.js",
   "scripts": {
+    "prestart": "rimraf ./dist",
     "start": "nodemon --watch src --exec 'npm run lint && node ./src/index.js --'",
+    "prebuild": "rimraf ./dist",
+    "build": "pkg ./package.json --targets latest-linux-x64,latest-macos-x64,latest-win-x64 --out-path ./dist",
     "lint": "eslint -c ./package.json ./"
   },
   "engines": {
@@ -35,6 +38,14 @@
       "eslint:recommended"
     ]
   },
+  "pkg": {
+    "assets": [
+      "_scripts/config/*",
+      "src/**/*.js",
+      "LICENCE",
+      "README.md"
+    ]
+  },
   "devDependencies": {
     "eslint": "^6.8.0",
     "nodemon": "^2.0.3"
@@ -43,6 +54,8 @@
     "commander": "^5.1.0",
     "deepmerge": "^4.2.2",
     "node-fetch": "^2.6.0",
+    "pkg": "^4.4.9",
+    "rimraf": "^3.0.2",
     "xmlbuilder2": "^2.4.0"
   }
 }
