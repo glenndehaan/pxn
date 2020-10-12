@@ -53,7 +53,7 @@
   "dependencies": {
     "commander": "^5.1.0",
     "deepmerge": "^4.2.2",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "pkg": "^4.4.9",
     "rimraf": "^3.0.2",
     "xmlbuilder2": "^2.4.0"
