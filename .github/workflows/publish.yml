@@ -14,6 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: olegtarasov/get-tag@v2
+        id: tagName
       - uses: actions/setup-node@v1
         with:
           node-version: 12
@@ -29,7 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ GIT_TAG_NAME }}
+          release_name: Release ${{ steps.tagName.outputs.tag }}
           draft: false
           prerelease: false
       - name: Upload pxn-linux
