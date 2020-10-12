@@ -73,5 +73,45 @@ module.exports = {
         });
 
         return value[0].url ? value[0].url : false;
+    },
+
+    /**
+     * Check if a show has an episode number
+     *
+     * @param season
+     * @param episode
+     * @return {boolean}
+     */
+    checkXMLTVNS: (season, episode) => {
+        if(season === "" || episode === "") {
+            return false;
+        }
+
+        if(isNaN(season) || isNaN(episode)) {
+            return false;
+        }
+
+        const seasonNumber = parseInt(season);
+        const episodeNumber = parseInt(episode);
+
+        if(seasonNumber > 1000 || episodeNumber > 1000) {
+            return false;
+        }
+
+        return true;
+    },
+
+    /**
+     * Returns the correct XMLTV_NS episode number
+     *
+     * @param season
+     * @param episode
+     * @return {string}
+     */
+    getXMLTVNS: (season, episode) => {
+        const seasonNumber = parseInt(season);
+        const episodeNumber = parseInt(episode);
+
+        return `${seasonNumber - 1}.${episodeNumber - 1}.`;
     }
 };
