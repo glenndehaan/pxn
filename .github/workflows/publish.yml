@@ -1,0 +1,60 @@
+# This workflow will do a clean install of node dependencies and build the source code
+# When the workflow succeeds the package will be published
+
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: olegtarasov/get-tag@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - name: Install dependencies
+        run: npm ci
+      - name: Build pxn
+        run: npm run build
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ GIT_TAG_NAME }}
+          draft: false
+          prerelease: false
+      - name: Upload pxn-linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/pxn-linux
+          asset_name: pxn-linux
+          asset_content_type: application/x-executable
+      - name: Upload pxn-macos
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/pxn-macos
+          asset_name: pxn-macos
+          asset_content_type: application/x-mach-binary
+      - name: Upload pxn-win.exe
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/pxn-win.exe
+          asset_name: pxn-win.exe
+          asset_content_type: application/x-dosexec

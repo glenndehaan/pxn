@@ -13,3 +13,4 @@ npm-debug.log
 config.json
 .pxn-channels
 pxn-guide.xml
+dist/
