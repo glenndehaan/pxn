@@ -62,9 +62,12 @@ const dateUtil = module.exports = {
     getNextDays: (amount = 7) => {
         const days = [];
 
+        const date = new Date();
+        days.push(dateUtil.getYYYYMMDD(date));
+
         for(let item = 0; item < amount; item++) {
             const date = new Date();
-            date.setDate(date.getDate() + item + 1);
+            date.setDate(date.getDate() + (item + 1));
             days.push(dateUtil.getYYYYMMDD(date));
         }
 
