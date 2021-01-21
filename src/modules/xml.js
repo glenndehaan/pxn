@@ -82,63 +82,66 @@ module.exports = {
                     const title = xmlProgramme.ele('title').txt(data.t);
                     title.att('lang', 'nl');
 
-                    // Set sub-title if available
-                    if(typeof data.additionalShowData.secondaryTitle !== "undefined" && data.additionalShowData.secondaryTitle !== '') {
-                        const subTitle = xmlProgramme.ele('sub-title').txt(data.additionalShowData.secondaryTitle);
-                        subTitle.att('lang', 'nl');
-                    }
+                    // Check if we have additional show data
+                    if(data.additionalShowData) {
+                        // Set sub-title if available
+                        if (typeof data.additionalShowData.secondaryTitle !== "undefined" && data.additionalShowData.secondaryTitle !== '') {
+                            const subTitle = xmlProgramme.ele('sub-title').txt(data.additionalShowData.secondaryTitle);
+                            subTitle.att('lang', 'nl');
+                        }
 
-                    // Set description if available
-                    if(data.additionalShowData.longDescription !== '') {
-                        const description = xmlProgramme.ele('desc').txt(data.additionalShowData.longDescription);
-                        description.att('lang', 'nl');
-                    }
+                        // Set description if available
+                        if (data.additionalShowData.longDescription !== '') {
+                            const description = xmlProgramme.ele('desc').txt(data.additionalShowData.longDescription);
+                            description.att('lang', 'nl');
+                        }
 
-                    // Set actor/director if available
-                    if(data.additionalShowData.cast.length > 0 || data.additionalShowData.directors.length > 0) {
-                        const credits = xmlProgramme.ele('credits');
+                        // Set actor/director if available
+                        if (data.additionalShowData.cast.length > 0 || data.additionalShowData.directors.length > 0) {
+                            const credits = xmlProgramme.ele('credits');
 
-                        for (let a = 0; a < data.additionalShowData.cast.length; a++) {
-                            if (data.additionalShowData.cast[a]) {
-                                credits.ele('actor').txt(data.additionalShowData.cast[a]);
+                            for (let a = 0; a < data.additionalShowData.cast.length; a++) {
+                                if (data.additionalShowData.cast[a]) {
+                                    credits.ele('actor').txt(data.additionalShowData.cast[a]);
+                                }
+                            }
+
+                            for (let b = 0; b < data.additionalShowData.directors.length; b++) {
+                                if (data.additionalShowData.directors[b]) {
+                                    credits.ele('director').txt(data.additionalShowData.directors[b]);
+                                }
                             }
                         }
 
-                        for (let b = 0; b < data.additionalShowData.directors.length; b++) {
-                            if (data.additionalShowData.directors[b]) {
-                                credits.ele('director').txt(data.additionalShowData.directors[b]);
+                        // Set date if available
+                        if (data.additionalShowData.year !== '') {
+                            xmlProgramme.ele('date').txt(data.additionalShowData.year);
+                        }
+
+                        // Set categories if available
+                        for (let c = 0; c < data.additionalShowData.categories.length; c++) {
+                            if (data.additionalShowData.categories[c].title) {
+                                const category = xmlProgramme.ele('category').txt(data.additionalShowData.categories[c].title);
+                                category.att('lang', 'nl');
                             }
                         }
-                    }
 
-                    // Set date if available
-                    if(data.additionalShowData.year !== '') {
-                        xmlProgramme.ele('date').txt(data.additionalShowData.year);
-                    }
-
-                    // Set categories if available
-                    for(let c = 0; c < data.additionalShowData.categories.length; c++) {
-                        if(data.additionalShowData.categories[c].title) {
-                            const category = xmlProgramme.ele('category').txt(data.additionalShowData.categories[c].title);
-                            category.att('lang', 'nl');
+                        // Set icon if available
+                        const icon = stringUtils.getIconFromAdditionalData(data.additionalShowData.images);
+                        if (icon) {
+                            xmlProgramme.ele('icon').att('src', icon);
                         }
-                    }
 
-                    // Set icon if available
-                    const icon = stringUtils.getIconFromAdditionalData(data.additionalShowData.images);
-                    if(icon) {
-                        xmlProgramme.ele('icon').att('src', icon);
-                    }
+                        // Set episode if available
+                        if (stringUtils.checkXMLTVNS(data.additionalShowData.seriesNumber, data.additionalShowData.seriesEpisodeNumber)) {
+                            const category = xmlProgramme.ele('episode-num').txt(stringUtils.getXMLTVNS(data.additionalShowData.seriesNumber, data.additionalShowData.seriesEpisodeNumber));
+                            category.att('system', 'xmltv_ns');
+                        }
 
-                    // Set episode if available
-                    if(stringUtils.checkXMLTVNS(data.additionalShowData.seriesNumber, data.additionalShowData.seriesEpisodeNumber)) {
-                        const category = xmlProgramme.ele('episode-num').txt(stringUtils.getXMLTVNS(data.additionalShowData.seriesNumber, data.additionalShowData.seriesEpisodeNumber));
-                        category.att('system', 'xmltv_ns');
-                    }
-
-                    // Set rating if available
-                    if(typeof data.additionalShowData.parentalRating !== "undefined" && data.additionalShowData.parentalRating !== '') {
-                        xmlProgramme.ele('rating').ele('value').txt(data.additionalShowData.parentalRating);
+                        // Set rating if available
+                        if (typeof data.additionalShowData.parentalRating !== "undefined" && data.additionalShowData.parentalRating !== '') {
+                            xmlProgramme.ele('rating').ele('value').txt(data.additionalShowData.parentalRating);
+                        }
                     }
                 }
             }

@@ -108,7 +108,12 @@ module.exports = {
 
             // Loop over all channel epg storage and add additional show data
             for(let i = 0; i < data.length; i++) {
-                data[i].additionalShowData = await dataUtils.epgShow(data[i].i, i, data.length);
+                // Check if we have a show identifier
+                if(data[i].i) {
+                    data[i].additionalShowData = await dataUtils.epgShow(data[i].i, i, data.length);
+                } else {
+                    console.log(`EPG Show (${i + 1}/${data.length}): Skipped...`);
+                }
             }
 
             // Store data in epg storage
