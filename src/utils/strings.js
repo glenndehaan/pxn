@@ -69,7 +69,7 @@ module.exports = {
      */
     getIconFromAdditionalData: (data) => {
         const value = data.filter((obj) => {
-            return obj.assetType === "tva-boxcover";
+            return obj.assetType === "HighResPortrait";
         });
 
         return typeof value[0] !== "undefined" ? value[0].url ? value[0].url : false : false;
